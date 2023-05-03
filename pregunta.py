@@ -10,12 +10,28 @@ espacio entre palabra y palabra.
 
 """
 import pandas as pd
-
+import re
 
 def ingest_data():
+    filename = 'clusters_report.txt'
+    with open(filename, mode='r') as clusters_report:
+        report = clusters_report.readlines()
 
-    #
-    # Inserte su código aquí
-    #
+    clusters = []
+    cluster = [0, 0, 0, '']
 
+    for fila in report[4:]:
+        if re.match('^ +[0-9]+ +', fila):
+            lista = fila.split()
+            cluster = [int(lista[0]), int(lista[1]), float(lista[2].replace(',', '.')), ' '.join(lista[4:]).replace('.', '')]
+
+        elif re.match('^ +[a-z]', fila):
+            palabras = ' '.join(fila.split())
+            cluster[3] += ' ' + palabras
+
+        elif re.match('^\n|^\s*$', fila):
+            clusters.append(cluster)
+            cluster = [0, 0, 0, '']
+
+    df = pd.DataFrame(clusters, columns=['cluster', 'cantidad_de_palabras_clave', 'porcentaje_de_palabras_clave', 'principales_palabras_clave'])
     return df
