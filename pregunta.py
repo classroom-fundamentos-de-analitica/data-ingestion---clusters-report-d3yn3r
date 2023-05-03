@@ -23,13 +23,14 @@ def ingest_data():
     for fila in report[4:]:
         if re.match('^ +[0-9]+ +', fila):
             lista = fila.split()
-            cluster = [int(lista[0]), int(lista[1]), float(lista[2].replace(',', '.')), ' '.join(lista[4:]).replace('.', '')]
+            cluster = [int(lista[0]), int(lista[1]), float(lista[2].replace(',', '.')), ' '.join(lista[4:])]
 
         elif re.match('^ +[a-z]', fila):
             palabras = ' '.join(fila.split())
             cluster[3] += ' ' + palabras
 
         elif re.match('^\n|^\s*$', fila):
+            cluster[3] = cluster[3].replace('.', '')
             clusters.append(cluster)
             cluster = [0, 0, 0, '']
 
